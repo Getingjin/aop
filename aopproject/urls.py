@@ -1,5 +1,5 @@
-from django.conf.urls import patterns, include, url
-from django.contrib import admin
+from django.conf.urls import patterns, url
+# from django.contrib import admin
 # Uncomment the next two lines to enable the admin:
 #from django.contrib import admin
 #admin.autodiscover()
@@ -46,5 +46,4 @@ urlpatterns = patterns('aop.views',
     url(r'^edituser/(?P<user_id>[^/]+)$', 'edituser'),
     url(r'^deluser/(?P<user_id>[^/]+)$', 'deluser'),
     url(r'^test/$', 'test'),
-    
 )

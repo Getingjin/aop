@@ -1,4 +1,4 @@
-# -*- coding: UTF-8 -*- 
+# -*- coding: UTF-8 -*-
 from django.shortcuts import render_to_response,render
 from django.http import HttpResponse,HttpResponseRedirect
 from django.db import models
@@ -9,7 +9,7 @@ from aopform import *
 from aop.models import hosts,svns,hostgroup,scripts,tasks,scriptgroup,UserProfile
 import os,paramiko,time,string
 from aopproject import settings
-from django.contrib.auth.models import User  
+from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as user_login, logout as user_logout
 from django.contrib.auth.decorators import login_required
 from aopfunction import *
@@ -19,24 +19,24 @@ reload(sys)
 sys.setdefaultencoding("utf-8")
 
 def login(request):
-    if request.method == 'POST':  
-            username = request.POST['username']  
-            password = request.POST['password']  
-            user = authenticate(username=username, password=password)  
-            if user is not None:  
-                if user.is_active:  
-                            user_login(request, user)  
-                            return HttpResponseRedirect('/')  
+    if request.method == 'POST':
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                if user.is_active:
+                            user_login(request, user)
+                            return HttpResponseRedirect('/')
                 else:
-                    return HttpResponse('用户没有启用!')  
+                    return HttpResponse('用户没有启用!')
             else:
-                return HttpResponse('用户名或者密码错误！')  
+                return HttpResponse('用户名或者密码错误！')
     else:
-        return render_to_response('login.html')  
+        return render_to_response('login.html')
 
 def loginout(request):
     user_logout(request)
-    return HttpResponseRedirect('/login/') 
+    return HttpResponseRedirect('/login/')
 
 
 @login_required(login_url='/login/')
@@ -45,9 +45,9 @@ def index(request):
         search = request.POST.get("search",'null')
         print  request.POST,search
         qset = (
-            Q(host_name__icontains = search) | 
-            Q(host_w_ip__icontains = search) | 
-            Q(host_w_port__icontains = search) | 
+            Q(host_name__icontains = search) |
+            Q(host_w_ip__icontains = search) |
+            Q(host_w_port__icontains = search) |
             Q(host_n_ip__icontains = search) |
             Q(host_n_port__icontains = search) |
             Q(host_user__icontains = search)
@@ -131,7 +131,7 @@ def hostedit(request,host_id):
             return HttpResponseRedirect('/')
         else:
             return HttpResponse("服务器信息不完整！")
-            
+
     else:
         try:
             host = hosts.objects.get(id=host_id)
@@ -139,15 +139,15 @@ def hostedit(request,host_id):
             return HttpResponse("服务器信息不存在！")
         form=hostform(model_to_dict(host))
         return render(request,'edithost.html',{'form':form})
-    
+
 @login_required(login_url='/login/')
 def showsvn(request):
     if request.method == "POST":
         search = request.POST.get("search",'null')
         qset = (
-            Q(svn_name__icontains = search) | 
-            Q(svn_user__icontains = search) | 
-            Q(svn_local__icontains = search) | 
+            Q(svn_name__icontains = search) |
+            Q(svn_user__icontains = search) |
+            Q(svn_local__icontains = search) |
             Q(svn_path__icontains = search) )
         svn_list = svns.objects.filter(qset)
         paginator = Paginator(svn_list, 10)
@@ -158,7 +158,7 @@ def showsvn(request):
             svn = paginator.page(1)
         except EmptyPage:
             svn = paginator.page(paginator.num_pages)
-        return render(request,'showsvn.html',{'svns':svn})        
+        return render(request,'showsvn.html',{'svns':svn})
     else:
         svn_list = svns.objects.all()
         paginator = Paginator(svn_list, 10)
@@ -189,7 +189,7 @@ def svnadd(request):
                 form = svnform()
                 return render(request,'addsvn.html',{'form':form,'result':result})
             return HttpResponseRedirect('/svnadd')
-            
+
     else:
         form = svnform()
         return render(request,'addsvn.html',{'form':form})
@@ -313,9 +313,9 @@ def showscript(request):
     if request.method == 'POST':
         search = request.POST.get("search",'null')
         qset = (
-            Q(script_name__icontains = search) | 
-            Q(script_file__icontains = search) | 
-            Q(script_date__icontains = search) | 
+            Q(script_name__icontains = search) |
+            Q(script_file__icontains = search) |
+            Q(script_date__icontains = search) |
             Q(script_description__icontains = search)
             )
         script_list = scripts.objects.filter(qset)
@@ -328,7 +328,7 @@ def showscript(request):
         except EmptyPage:
             script = paginator.page(paginator.num_pages)
         script_group = scriptgroup.objects.all()
-        return render(request,'showscript.html',{'scripts':script,'scriptgroups':script_group})        
+        return render(request,'showscript.html',{'scripts':script,'scriptgroups':script_group})
     else:
         script_list = scripts.objects.all()
         paginator = Paginator(script_list, 10)
@@ -338,7 +338,7 @@ def showscript(request):
         except PageNotAnInteger:
             script = paginator.page(1)
         except EmptyPage:
-            script = paginator.page(paginator.num_pages)        
+            script = paginator.page(paginator.num_pages)
         script_group = scriptgroup.objects.all()
         return render(request,'showscript.html',{'scripts':script,'scriptgroups':script_group})
 
@@ -377,7 +377,7 @@ def group(request):
         return HttpResponseRedirect('/group/')
     else:
         host_group_form = hostgroupform()
-        hostgroups = hostgroup.objects.all()  
+        hostgroups = hostgroup.objects.all()
         script_group_form = scriptgroupform()
         scriptgroups = scriptgroup.objects.all()
     return render(request,'group.html',{'host_group_form':host_group_form,'script_group_form':script_group_form,'hostgroups':hostgroups,'scriptgroups':scriptgroups})
@@ -398,12 +398,12 @@ def scriptgroup_detail(request,group_id):
 def hostgroup_del(request,group_id):
     host_group = hostgroup.objects.get(id=group_id)
     if request.user.username != host_group.create_user and request.user.username != "root":
-        return HttpResponse("你木有权限删除本条记录！")    
+        return HttpResponse("你木有权限删除本条记录！")
     hostgroup.objects.filter(id=group_id).delete()
     return HttpResponseRedirect('/group/')
 
 @login_required(login_url='/login/')
-def hostgroup_del_host(request):    
+def hostgroup_del_host(request):
     if request.method == 'POST':
         try:
             group_id=request.POST['group_id']
@@ -421,7 +421,7 @@ def hostgroup_del_host(request):
 def scriptgroup_del(request,group_id):
     script_group = scriptgroup.objects.get(id=group_id)
     if request.user.username != script_group.create_user and request.user.username != "root":
-        return HttpResponse("你木有权限删除本条记录！") 
+        return HttpResponse("你木有权限删除本条记录！")
     scriptgroup.objects.filter(id=group_id).delete()
     return HttpResponseRedirect('/group/')
 
@@ -429,7 +429,7 @@ def scriptgroup_del(request,group_id):
 def scriptgroup_del_script(request):
     if request.method == 'POST':
         try:
-            group_id = request.POST['group_id']            
+            group_id = request.POST['group_id']
             script_id = request.POST['script_id']
             script_group = scriptgroup.objects.get(id=group_id)
             script = scripts.objects.get(id=script_id)
@@ -470,13 +470,14 @@ def addtogroup(request):
                 group.save()
                 result = str(script.script_name)+". add to Server Group ."+str(group.script_groupname)+". Success!"
             return HttpResponse(result,mimetype='application/html')
-            
+
     else:
         return HttpResponse("xx")
 
 
 @login_required(login_url='/login/')
-def task(request):  
+def task(request):
+    _task_list = None
     if request.method == 'POST':
         form = taskform(request.POST)
         if form.is_valid():
@@ -499,8 +500,8 @@ def task(request):
                 return HttpResponse("添加任务失败！")
     else:
         form = taskform()
-        task_list = tasks.objects.all()
-    return render(request,'task.html',{'form':form,'task_list':task_list})
+        _task_list = tasks.objects.all()
+    return render(request, 'task.html', {'form': form, 'task_list': _task_list})
 
 @login_required(login_url='/login/')
 def task_del(request,task_id):
@@ -530,7 +531,7 @@ def task_run(request):
         except:
             result = "Add Task queue Faild!"
         return HttpResponse(result,mimetype='application/html')
-    
+
 @login_required(login_url='/login/')
 def task_status(request,task_id):
     form = taskform()
@@ -595,13 +596,13 @@ def edituser(request,user_id):
             user.set_password(password)
             user.save()
             userprofile = UserProfile.objects.get(user=user)
-            userprofile.name = name 
+            userprofile.name = name
             userprofile.iphone = iphone
             userprofile.save()
             return HttpResponseRedirect('/showuser/')
         except Exception as e:
             return HttpResponse(e)
-        
+
     else:
         user = User.objects.get(id=user_id)
         return render(request,'edituser.html',{'user':user})
